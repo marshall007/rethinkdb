@@ -180,7 +180,7 @@ class IterableResult
         new Promise( (resolve, reject) =>
             if @_endFlag is true
                 resolve()
-            else if not @_closeCb?
+            if not @_closeCb?
                 @_closeCb = (err) =>
                     # Clear all callbacks for outstanding requests
                     while @_cbQueue.length > 0
@@ -197,8 +197,6 @@ class IterableResult
                 @_closeAsap = true
                 @_outstandingRequests += 1
                 @_conn._endQuery(@_token)
-            else
-                @emit 'error', new err.RqlDriverError "This shouldn't happen"
         ).nodeify cb
 
     _each: varar(1, 2, (cb, onFinished) ->
