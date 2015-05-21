@@ -1126,7 +1126,11 @@ class TcpConnection extends Connection
                         reject error
                     else
                         resolve result
-                if @rawSocket?
+                # Need to check if the socket is already in the
+                # process of closing (which can happen if .close() is
+                # called more than once). If so we won't try to end
+                # the socket again.
+                if @rawSocket? and not @rawSocket._writeableState.ending
                     @rawSocket.once("close", =>
                         closeCb()
                         # In the case where we're actually being
