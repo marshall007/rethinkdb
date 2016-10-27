@@ -1898,6 +1898,8 @@ std::vector<datum_t> ordered_union_datum_stream_t::next_raw_batch(
     std::vector<datum_t> batch;
     batcher_t batcher = batchspec.to_batcher();
 
+    profile::disabler_t profile_disabler(env->trace);
+
     if (is_ordered_by_field) {
         if (do_prelim_cache) {
             for (auto &&stream : streams) {
