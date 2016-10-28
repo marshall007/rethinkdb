@@ -1885,6 +1885,11 @@ ordered_union_datum_stream_t::ordered_union_datum_stream_t(
     for (auto &&stream : _streams) {
         streams.push_back(std::move(stream));
     }
+
+    if (env->trace != nullptr) {
+        trace = make_scoped<profile::trace_t>();
+        disabler = make_scoped<profile::disabler_t>(trace.get());
+    }
 }
 
 std::vector<datum_t> ordered_union_datum_stream_t::next_raw_batch(
@@ -1897,8 +1902,6 @@ std::vector<datum_t> ordered_union_datum_stream_t::next_raw_batch(
            "Cannot use an infinite stream with an ordered `union`.");
     std::vector<datum_t> batch;
     batcher_t batcher = batchspec.to_batcher();
-
-    profile::disabler_t profile_disabler(env->trace);
 
     if (is_ordered_by_field) {
         if (do_prelim_cache) {

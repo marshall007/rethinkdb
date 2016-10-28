@@ -301,6 +301,10 @@ private:
 
     bool do_prelim_cache;
 
+    // Set during construction.
+    scoped_ptr_t<profile::trace_t> trace;
+    scoped_ptr_t<profile::disabler_t> disabler;
+
     struct merge_cache_item_t {
         datum_t value;
         counted_t<datum_stream_t> source;
